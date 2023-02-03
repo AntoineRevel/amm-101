@@ -355,7 +355,4 @@ contract Evaluator
 		}
 	}
 
-
-
-
 }
