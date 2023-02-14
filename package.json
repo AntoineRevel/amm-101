@@ -3,9 +3,11 @@
     "@openzeppelin/contracts": "^3.4.1",
     "@supercharge/strings": "^1.29.1",
     "@truffle/hdwallet-provider": "^2.1.5",
-    "truffle-plugin-verify": "^0.5.21"
+    "truffle-plugin-verify": "^0.5.33"
   },
   "dependencies": {
+    "@uniswap/v2-core": "^1.0.1",
+    "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "truffle": "^5.7.4"
   }
 }
