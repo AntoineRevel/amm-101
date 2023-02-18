@@ -37,60 +37,20 @@ contract AntoineRevel_SolutionTest {
     function buyToken() public payable {
 
         address [] memory path  = new address[](2);
-        path[0] = address(weth);
+        path[0] = uniswapRouter.WETH();
         path[1]= address(dummyToken);
         uint256[] memory amounts = uniswapRouter.swapExactETHForTokens{ value: msg.value }(0, path, address(this), block.timestamp + 15);
+
     }
 
-    function swapSingleHopExactAmountIn(uint amountIn) external returns (uint) {
-        weth.transferFrom(msg.sender, address(this), amountIn);
-        weth.approve(address(router), amountIn);
-
-        address[] memory path;
-        path = new address[](2);
-        path[0] = uniswapRouter.WETH().
-        path[1]= address(dummyToken);
-
-        uint[] memory amounts = uniswapRouter.swapExactTokensForTokens(
-            amountIn,
-            amountOutMin,
-            path,
-            msg.sender,
-            block.timestamp
-        );
-
-        // amounts[0] = WETH amount, amounts[1] = DAI amount
-        return amounts[1];
-    }
 
     function getPoint() public view returns (uint256){
         return tdToken.balanceOf(address(this));
     }
 
-    function getPoint() public view returns (uint256){
-        return tdToken.balanceOf(address(this));
+    function getFactory() public view returns (address){
+        return uniswapRouter.factory();
     }
 
     receive() external payable {}
-}
-
-interface IERC20 {
-    function totalSupply() external view returns (uint);
-
-    function balanceOf(address account) external view returns (uint);
-
-    function transfer(address recipient, uint amount) external returns (bool);
-
-    function allowance(address owner, address spender) external view returns (uint);
-
-    function approve(address spender, uint amount) external returns (bool);
-
-    function transferFrom(
-        address sender,
-        address recipient,
-        uint amount
-    ) external returns (bool);
-
-    event Transfer(address indexed from, address indexed to, uint value);
-    event Approval(address indexed owner, address indexed spender, uint value);
 }
