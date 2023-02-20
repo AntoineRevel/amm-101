@@ -57,6 +57,7 @@ contract AntoineRevel_SolutionTest {
 
 
 
+
     function getPoint() public view returns (uint256){
         return tdToken.balanceOf(address(this));
     }

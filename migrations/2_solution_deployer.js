@@ -8,11 +8,11 @@ var DummyToken="0x2aF483edaE4cce53186E6ed418FE92f8169Ad74E";
 var UniswapV2Router02="0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
 var tdToken="0x22E065dAE8e21d31ca04c1695d464D28C7b6014B";
 
-module.exports = (deployer, network, accounts) => {
+module.exports = (deployer, network) => {
     deployer.then(async () => {
-        if (network == "goerli") {
+        if (network.localeCompare("goerli")) {
             await deployExerciceSolution();
-        } else if (network == "ganache") {
+        } else if (network.localeCompare("ganache")) {
             await deploylocalExerciceSolution();
         }
         await deployRecap();
