@@ -38,7 +38,25 @@ contract ExerciceSolution is IExerciceSolution {
 
     function withdrawLiquidity() external override {}
 
-    function swapYourTokenForDummyToken() external override {}
+    function swapYourTokenForDummyToken() external override {
+        //buyTts();
+        uint256 balanceTTS=tokenToSwap.balanceOf(address(this));
+        require(tokenToSwap.approve(address(uniswapRouter), balanceTTS),"token approved failed");
+
+        address [] memory path  = new address[](3);
+        path[0] = tokenToSwapAddress;
+        path[1] = wethAddress;
+        path[2]= dummyTokenAddress;
+
+        uniswapRouter.swapExactTokensForTokens(10, 0, path, address(this), block.timestamp+15);
+    }
+
+    function buyTts() private{
+        address [] memory path  = new address[](2);
+        path[0] = wethAddress;
+        path[1]= tokenToSwapAddress;
+        uniswapRouter.swapExactETHForTokens{ value: address(this).balance }(0, path, address(this), block.timestamp + 15);
+    }
 
     function swapYourTokenForEth() external override {
         address [] memory path  = new address[](2);
@@ -47,5 +65,7 @@ contract ExerciceSolution is IExerciceSolution {
         uniswapRouter.swapExactETHForTokens{ value: address(this).balance }(0, path, address(this), block.timestamp + 15);
     }
 
-    //receive() external payable {}
+    function getValue() public view returns (uint256){
+        return address(this).balance;
+    }
 }

@@ -24,7 +24,6 @@ contract AntoineRevel_SolutionTest {
     address tokenToSwapAddress;
     IRichERC20 private tokenToSwap;
 
-
     constructor(address payable _evaluator,address _uniswapRouterAddress,address _dummyToken,address _tdToken) public payable {
         evaluator = Evaluator(_evaluator);
         tdToken=ERC20(_tdToken);
@@ -49,18 +48,19 @@ contract AntoineRevel_SolutionTest {
         address [] memory path  = new address[](2);
         path[0] = wethAddress;
         path[1]= dummyTokenAddress;
-        uniswapRouter.swapExactETHForTokens{ value: msg.value/2 }(0, path, address(this), block.timestamp + 15);
+        uniswapRouter.swapExactETHForTokens{ value: msg.value/3 }(0, path, address(this), block.timestamp + 15);
         evaluator.ex1_showIHaveTokens();
     }
 
     function ex2_addLiquidity() private {
         uint256 balanceDT=dummyToken.balanceOf(address(this));
         require(dummyToken.approve(address(uniswapRouter), balanceDT),"token approved failed");
-        uniswapRouter.addLiquidityETH{ value: msg.value/2 }(dummyTokenAddress,balanceDT,0,0,address(this),block.timestamp + 15);
+        uint256 amount=msg.value/3;
+        uniswapRouter.addLiquidityETH{ value: amount }(dummyTokenAddress,balanceDT,0,0,address(this),block.timestamp + 15);
         evaluator.ex2_showIProvidedLiquidity();
     }
 
-    function continueClaim(address _ttsAddress,address solution) external payable{
+    function continueClaim(address _ttsAddress,address solution) external{
         tokenToSwapAddress=_ttsAddress;
         tokenToSwap=IRichERC20(_ttsAddress);
 
@@ -71,12 +71,15 @@ contract AntoineRevel_SolutionTest {
 
         evaluator.submitExercice(IExerciceSolution(solution));
         evaluator.ex8_contractCanSwapVsEth();
+        evaluator.ex9_contractCanSwapVsDummyToken();
     }
 
     function ex7_TradableOnUniswap() private{
         uint256 balanceTTS=tokenToSwap.balanceOf(address(this));
         require(tokenToSwap.approve(address(uniswapRouter), balanceTTS),"token approved failed");
-        uniswapRouter.addLiquidityETH{ value: msg.value }(tokenToSwapAddress,balanceTTS,0,0,address(this),block.timestamp + 15);
+        uint256 amount =address(this).balance;
+        uniswapRouter.addLiquidityETH{ value: amount }(tokenToSwapAddress,amount,0,0,address(this),block.timestamp + 15);
+
         evaluator.ex7_tokenIsTradableOnUniswap();
     }
 
@@ -90,6 +93,10 @@ contract AntoineRevel_SolutionTest {
 
     function getTicker() public view returns (string memory){
         return evaluator.readTicker(address(this));
+    }
+
+    function getValue() public view returns (uint256){
+        return address(this).balance;
     }
 
 }

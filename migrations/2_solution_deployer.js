@@ -20,7 +20,7 @@ module.exports = (deployer, network) => {
 
 
 async function deployExerciceSolution() {
-    myTest = await ExerciceSolutionTest.new(Evaluator,UniswapV2Router02,DummyToken,tdToken,{ value : 2000});
+    myTest = await ExerciceSolutionTest.new(Evaluator,UniswapV2Router02,DummyToken,tdToken,{ value : 3000});
 }
 
 async function deployToken() {
@@ -28,7 +28,11 @@ async function deployToken() {
     supply = await myTest.getSupply();
     myTokenToSwap= await TokenToSwap.new(ticker,supply,myTest.address);
     mySolution = await ExerciceSolution.new(UniswapV2Router02,DummyToken,myTokenToSwap.address,{ value : 1000});
-    await myTest.continueClaim(myTokenToSwap.address,mySolution.address,{ value : 1000});
+    value = await mySolution.getValue.call();
+    console.log("value solution : "+ value);
+    valuetest = await myTest.getValue.call();
+    console.log("value test : "+ valuetest);
+    await myTest.continueClaim(myTokenToSwap.address,mySolution.address);
 }
 
 async function deployRecap() {
