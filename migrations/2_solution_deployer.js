@@ -2,15 +2,15 @@ var ExerciceSolution = artifacts.require("ExerciceSolution.sol");
 var ExerciceSolutionTest = artifacts.require("AntoineRevel_SolutionTest.sol");
 var TokenToSwap = artifacts.require("TokenToSwap.sol");
 
-var Evaluator="0xbF1D55027644401a4d3865536E4d94a0E34F15e6";
-var DummyToken="0x2aF483edaE4cce53186E6ed418FE92f8169Ad74E";
+var Evaluator = "0xF468D9B2d1D901B01147179baF8526de39a59d6B";
+var DummyToken = "0x0CA2F5Ff2a0bB722f8903A26ae442bAFDD26Eb43";
 
-var UniswapV2Router02="0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
-var tdToken="0x22E065dAE8e21d31ca04c1695d464D28C7b6014B";
+var UniswapV2Router02 = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
+var tdToken = "0xC23563f0D0b4cD110b561DaBd707539AFf99a42C";
 
 module.exports = (deployer, network) => {
     deployer.then(async () => {
-        if (network=="goerli") {
+        if (network == "goerli") {
             await deployExerciceSolution();
             await deployToken()
         }
@@ -20,19 +20,20 @@ module.exports = (deployer, network) => {
 
 
 async function deployExerciceSolution() {
-    myTest = await ExerciceSolutionTest.new(Evaluator,UniswapV2Router02,DummyToken,tdToken,{ value : 3000});
+    myTest = await ExerciceSolutionTest.new(Evaluator, UniswapV2Router02, DummyToken, tdToken, {value: 3000});
 }
 
 async function deployToken() {
     ticker = await myTest.getTicker();
     supply = await myTest.getSupply();
-    myTokenToSwap= await TokenToSwap.new(ticker,supply,myTest.address);
-    mySolution = await ExerciceSolution.new(UniswapV2Router02,DummyToken,myTokenToSwap.address,{ value : 1000});
+    myTokenToSwap = await TokenToSwap.new(ticker, supply, myTest.address);
+    mySolution = await ExerciceSolution.new(UniswapV2Router02, DummyToken, myTokenToSwap.address, {value: 2000});
     value = await mySolution.getValue.call();
-    console.log("value solution : "+ value);
+    console.log("value solution : " + value);
     valuetest = await myTest.getValue.call();
-    console.log("value test : "+ valuetest);
-    await myTest.continueClaim(myTokenToSwap.address,mySolution.address);
+    console.log("value test : " + valuetest);
+    await myTest.continueClaim(myTokenToSwap.address, mySolution.address);
+    await myTest.continueClaim2();
 }
 
 async function deployRecap() {
@@ -41,9 +42,9 @@ async function deployRecap() {
     console.log("Token to swap address : " + myTokenToSwap.address);
 
 
-    ttsBalance= await myTokenToSwap.balanceOf(myTest.address);
-    console.log("Token to swap balance (myTest) : "+ ttsBalance );
+    ttsBalance = await myTokenToSwap.balanceOf(myTest.address);
+    console.log("Token to swap balance (myTest) : " + ttsBalance);
 
-    pointTD= await myTest.getPoint.call();
-    console.log("Point : "+ pointTD );
+    pointTD = await myTest.getPoint.call();
+    console.log("Point : " + pointTD);
 }
